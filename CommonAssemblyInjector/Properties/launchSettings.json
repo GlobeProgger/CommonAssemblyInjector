@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CommonAssemblyInjector": {
+      "commandName": "Project",
+      "commandLineArgs": "/solDir:C:\\Users\\MA101802\\source\\repos\\CommonAssemblyTestProject /path:C:\\Users\\MA101802\\source\\repos\\CommonAssemblyTestProject\\CommonAssemblyInfo.cs /version:1.0.0.0"
+    }
+  }
+}
