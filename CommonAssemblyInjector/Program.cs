@@ -9,7 +9,7 @@ namespace CommonAssemblyInjector
         private const string PATH = "/path:";
         private const string VERSION = "/version:";
         private const string IGNORE = "/ignore:";
-        
+
         static async Task Main(string[] args)
         {
             //const string SOLUTION_DIR = @"C:\Users\MA101802\source\repos\CommonAssemblyTestProject";
@@ -22,30 +22,32 @@ namespace CommonAssemblyInjector
                 return;
             }
 
+            Injector injector = new Injector();
+
             foreach (string arg in args)
             {
                 if (arg.StartsWith(SOL_DIR))
                 {
-                    Injector.SolutionDir = arg.Substring(SOL_DIR.Length).StripQuotes();
+                    injector.SolutionDir = arg.Substring(SOL_DIR.Length).StripQuotes();
                 }
 
                 if (arg.StartsWith(PATH))
                 {
-                    Injector.CommonAssemblyInfoPath = arg.Substring(PATH.Length).StripQuotes();
+                    injector.CommonAssemblyInfoPath = arg.Substring(PATH.Length).StripQuotes();
                 }
 
                 if (arg.StartsWith(VERSION))
                 {
-                    Injector.TargetVersion = arg.Substring(VERSION.Length).StripQuotes();
+                    injector.TargetVersion = arg.Substring(VERSION.Length).StripQuotes();
                 }
-                
+
                 if (arg.StartsWith(IGNORE))
                 {
-                    Injector.IgnoreDirs = arg.Substring(IGNORE.Length).StripQuotes().Split(',');
+                    injector.IgnoreDirs = arg.Substring(IGNORE.Length).StripQuotes().Split(',');
                 }
             }
 
-            await Injector.TryAddCommonAssemblyToProjects();
+            await injector.TryAddCommonAssemblyToProjects();
         }
 
         private static void PrintUsage()
@@ -53,7 +55,7 @@ namespace CommonAssemblyInjector
             Console.WriteLine("Usage: CommonAssemblyInjector "
                               + "[/solDir:<directory_of_solution_to_inject>] "
                               + "[/path:<path_of_CommonAssemblyInfo.cs_File>] "
-                              + "[/version:<version_of_assemblies_to_inject(e.g. \"1.0.0.0\")>]" 
+                              + "[/version:<version_of_assemblies_to_inject(e.g. \"1.0.0.0\")>]"
                               + "[/ignore:<comma_separated_directories_to_ignore>]");
         }
 
