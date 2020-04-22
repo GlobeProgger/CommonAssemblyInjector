@@ -4,7 +4,6 @@ C:\Users\MA101802\source\repos\CommonAssemblyInjector\CommonAssemblyInjector\bin
 C:\Users\MA101802\source\repos\CommonAssemblyInjector\CommonAssemblyInjector\bin\Debug\netcoreapp3.1\CommonAssemblyInjector.runtimeconfig.dev.json
 C:\Users\MA101802\source\repos\CommonAssemblyInjector\CommonAssemblyInjector\bin\Debug\netcoreapp3.1\CommonAssemblyInjector.dll
 C:\Users\MA101802\source\repos\CommonAssemblyInjector\CommonAssemblyInjector\bin\Debug\netcoreapp3.1\CommonAssemblyInjector.pdb
-C:\Users\MA101802\source\repos\CommonAssemblyInjector\CommonAssemblyInjector\obj\Debug\netcoreapp3.1\CommonAssemblyInjector.csprojAssemblyReference.cache
 C:\Users\MA101802\source\repos\CommonAssemblyInjector\CommonAssemblyInjector\obj\Debug\netcoreapp3.1\CommonAssemblyInjector.csproj.CoreCompileInputs.cache
 C:\Users\MA101802\source\repos\CommonAssemblyInjector\CommonAssemblyInjector\obj\Debug\netcoreapp3.1\CommonAssemblyInjector.AssemblyInfoInputs.cache
 C:\Users\MA101802\source\repos\CommonAssemblyInjector\CommonAssemblyInjector\obj\Debug\netcoreapp3.1\CommonAssemblyInjector.AssemblyInfo.cs
