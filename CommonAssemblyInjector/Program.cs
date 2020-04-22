@@ -15,7 +15,7 @@ namespace CommonAssemblyInjector
             //const string COMMON_ASSEMBLY_INFO_PATH = @"C:\Users\MA101802\source\repos\CommonAssemblyTestProject\CommonAssemblyInfo.cs";
             //const string VERSION = "1.0.0.0";
 
-            if (args.Length == 3)
+            if (args.Length != 3)
             {
                 PrintUsage();
                 return;
@@ -26,23 +26,20 @@ namespace CommonAssemblyInjector
                 if (arg.StartsWith(SOL_DIR))
                 {
                     Injector.SolutionDir = arg.Substring(SOL_DIR.Length).StripQuotes();
-                    continue;
                 }
 
                 if (arg.StartsWith(PATH))
                 {
-                    Injector.SolutionDir = arg.Substring(PATH.Length).StripQuotes();
-                    continue;
+                    Injector.CommonAssemblyInfoPath = arg.Substring(PATH.Length).StripQuotes();
                 }
 
                 if (arg.StartsWith(VERSION))
                 {
-                    Injector.SolutionDir = arg.Substring(VERSION.Length).StripQuotes();
-                    continue;
+                    Injector.TargetVersion = arg.Substring(VERSION.Length).StripQuotes();
                 }
-
-                await Injector.TryAddCommonAssemblyToProjects();
             }
+
+            await Injector.TryAddCommonAssemblyToProjects();
         }
 
         private static void PrintUsage()
