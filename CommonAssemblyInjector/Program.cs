@@ -12,10 +12,6 @@ namespace CommonAssemblyInjector
 
         static async Task Main(string[] args)
         {
-            //const string SOLUTION_DIR = @"C:\Users\MA101802\source\repos\CommonAssemblyTestProject";
-            //const string COMMON_ASSEMBLY_INFO_PATH = @"C:\Users\MA101802\source\repos\CommonAssemblyTestProject\CommonAssemblyInfo.cs";
-            //const string VERSION = "1.0.0.0";
-
             if (args.Length < 3)
             {
                 PrintUsage();

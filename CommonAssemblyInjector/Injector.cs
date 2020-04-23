@@ -9,7 +9,6 @@ namespace CommonAssemblyInjector
 {
     public class Injector
     {
-        private const string ONE_UP = "..\\";
         private const string FILE_TYPE_PROJECT = "*.csproj";
         private const string FILE_TYPE_ASSEMBLY = "*AssemblyInfo.cs";
 
@@ -22,19 +21,19 @@ namespace CommonAssemblyInjector
 
         public async Task TryAddCommonAssemblyToProjects()
         {
-            IAsyncEnumerable<string> projectFilePaths =
+            IAsyncEnumerable<Tuple<string, string>> assemblyAndProjectFiles =
                 GetRelevantProjectFilesAsync(SolutionDir, TargetVersion, CommonAssemblyInfoPath);
 
-            await foreach (string projectFilePath in projectFilePaths)
+            await foreach (Tuple<string, string> assemblyAndProjectFile in assemblyAndProjectFiles)
             {
                 //int depth = await FileOperationHelper.GetFileDepthDiffAsync(SolutionDir, filePath);
 
-                await LinkCommonAssemblyInfoToProjectFilesAsync(projectFilePath);
-                await UpdateAssemblyInfoFileAsync(projectFilePath, CommonAssemblyInfoPath);
+                await LinkCommonAssemblyInfoToProjectFilesAsync(assemblyAndProjectFile.Item2);
+                await UpdateAssemblyInfoFileAsync(assemblyAndProjectFile.Item1, CommonAssemblyInfoPath);
             }
         }
 
-        private async IAsyncEnumerable<string> GetRelevantProjectFilesAsync(string solutionDir, string version,
+        private async IAsyncEnumerable<Tuple<string, string>> GetRelevantProjectFilesAsync(string solutionDir, string version,
             string commonAssemblyPath)
         {
             if (!(await FileOperationHelper.GetFilesAsync(solutionDir, FILE_TYPE_ASSEMBLY, SearchOption.AllDirectories) is List<string>
@@ -55,8 +54,8 @@ namespace CommonAssemblyInjector
                 string path = Directory.GetParent(Directory.GetParent(filteredFilePath).FullName).FullName;
 
 
-                yield return Directory.GetFiles(path, FILE_TYPE_PROJECT, SearchOption.TopDirectoryOnly)
-                    .FirstOrDefault();
+                yield return Tuple.Create(filteredFilePath, Directory.GetFiles(path, FILE_TYPE_PROJECT, SearchOption.TopDirectoryOnly)
+                    .FirstOrDefault());
             }
         }
 
@@ -88,16 +87,7 @@ namespace CommonAssemblyInjector
 
             string relativeCommonAssemblyInFoPath = Path.GetRelativePath(Directory.GetParent(projectFilePath).FullName, CommonAssemblyInfoPath);
 
-            //TODO: how to add relative path in regex??
-
-            //string asdf = Regex.Replace(relativeCommonAssemblyInFoPath, "\\", "\\\\");
-            //var asdf = Regex.Replace(relativeCommonAssemblyInFoPath, "\\", "\\\\");
-            var asdf = Regex.Replace(relativeCommonAssemblyInFoPath, "\\\\", "\\\\\\\\");
-
-            Regex findRegEx = new Regex($@"<Compile Include=""{asdf}"">",
-               RegexOptions.Singleline);
-
-            if (findRegEx.IsMatch(projectFileContent))
+            if (projectFileContent.Contains(relativeCommonAssemblyInFoPath))
             {
                 return; // Is already injected
             }
