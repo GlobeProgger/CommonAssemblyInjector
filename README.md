@@ -10,3 +10,4 @@ Call the tool with the following command line arguments:
 * /solDir: Absolute directory of solution to inject the CommonAssemblyInfo into  (e.g. "C:\repos\MySolution\MyProject\CommonAssemblyInfo.cs")
 * /path: Absolute path of CommonAssemblyInfo file (e.g. "C:\repos\MySolution")
 * /version: Version of assemblies to inject (e.g. "1.0.0.0")
+* /ignore: Comma separated directories to ignore
