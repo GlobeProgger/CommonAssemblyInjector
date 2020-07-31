@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\MA101802\\source\\repos\\CommonAssemblyInjector\\CommonAssemblyInjector\\CommonAssemblyInjector.csproj": {}
+    "C:\\Users\\MA101802\\Source\\Repos\\CommonAssemblyInjector\\CommonAssemblyInjector\\CommonAssemblyInjector.csproj": {}
   },
   "projects": {
-    "C:\\Users\\MA101802\\source\\repos\\CommonAssemblyInjector\\CommonAssemblyInjector\\CommonAssemblyInjector.csproj": {
+    "C:\\Users\\MA101802\\Source\\Repos\\CommonAssemblyInjector\\CommonAssemblyInjector\\CommonAssemblyInjector.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\MA101802\\source\\repos\\CommonAssemblyInjector\\CommonAssemblyInjector\\CommonAssemblyInjector.csproj",
+        "projectUniqueName": "C:\\Users\\MA101802\\Source\\Repos\\CommonAssemblyInjector\\CommonAssemblyInjector\\CommonAssemblyInjector.csproj",
         "projectName": "CommonAssemblyInjector",
-        "projectPath": "C:\\Users\\MA101802\\source\\repos\\CommonAssemblyInjector\\CommonAssemblyInjector\\CommonAssemblyInjector.csproj",
+        "projectPath": "C:\\Users\\MA101802\\Source\\Repos\\CommonAssemblyInjector\\CommonAssemblyInjector\\CommonAssemblyInjector.csproj",
         "packagesPath": "C:\\Users\\MA101802\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\MA101802\\source\\repos\\CommonAssemblyInjector\\CommonAssemblyInjector\\obj\\",
+        "outputPath": "C:\\Users\\MA101802\\Source\\Repos\\CommonAssemblyInjector\\CommonAssemblyInjector\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -25,11 +25,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "http://proget.tecan.net/nuget/SOUPs": {},
-          "http://proget.tecan.net/nuget/TecanBuildSystem": {},
-          "http://proget.tecan.net/nuget/TecanComponentDevelopment": {},
-          "http://proget.tecan.net/nuget/TecanComponents": {},
-          "http://proget.tecan.net/nuget/Tools": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -60,7 +55,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -26,8 +26,6 @@ namespace CommonAssemblyInjector
 
             await foreach (Tuple<string, string> assemblyAndProjectFile in assemblyAndProjectFiles)
             {
-                //int depth = await FileOperationHelper.GetFileDepthDiffAsync(SolutionDir, filePath);
-
                 await LinkCommonAssemblyInfoToProjectFilesAsync(assemblyAndProjectFile.Item2);
                 await UpdateAssemblyInfoFileAsync(assemblyAndProjectFile.Item1, CommonAssemblyInfoPath);
             }
