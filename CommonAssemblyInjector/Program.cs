@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 
 namespace CommonAssemblyInjector
 {
-    class Program
+    internal static class Program
     {
-        private const string SOL_DIR = "/solDir:";
-        private const string PATH = "/path:";
-        private const string VERSION = "/version:";
-        private const string IGNORE = "/ignore:";
+        private const string SolDir = "/solDir:";
+        private const string Path = "/path:";
+        private const string Version = "/version:";
+        private const string Ignore = "/ignore:";
 
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             if (args.Length < 3)
             {
@@ -18,32 +18,30 @@ namespace CommonAssemblyInjector
                 return;
             }
 
-            Injector injector = new Injector();
-
             foreach (string arg in args)
             {
-                if (arg.StartsWith(SOL_DIR))
+                if (arg.StartsWith(SolDir))
                 {
-                    injector.SolutionDir = arg.Substring(SOL_DIR.Length).StripQuotes();
+                    Injector.SolutionDir = arg.Substring(SolDir.Length).StripQuotes();
                 }
 
-                if (arg.StartsWith(PATH))
+                if (arg.StartsWith(Path))
                 {
-                    injector.CommonAssemblyInfoPath = arg.Substring(PATH.Length).StripQuotes();
+                    Injector.CommonAssemblyInfoPath = arg.Substring(Path.Length).StripQuotes();
                 }
 
-                if (arg.StartsWith(VERSION))
+                if (arg.StartsWith(Version))
                 {
-                    injector.TargetVersion = arg.Substring(VERSION.Length).StripQuotes();
+                    Injector.TargetVersion = arg.Substring(Version.Length).StripQuotes();
                 }
 
-                if (arg.StartsWith(IGNORE))
+                if (arg.StartsWith(Ignore))
                 {
-                    injector.IgnoreDirs = arg.Substring(IGNORE.Length).StripQuotes().Split(',');
+                    Injector.IgnoreDirs = arg.Substring(Ignore.Length).StripQuotes().Split(',');
                 }
             }
 
-            await injector.TryAddCommonAssemblyToProjects();
+            await Injector.TryAddCommonAssemblyToProjects();
         }
 
         private static void PrintUsage()
@@ -54,6 +52,5 @@ namespace CommonAssemblyInjector
                               + "[/version:<version_of_assemblies_to_inject(e.g. \"1.0.0.0\")>]"
                               + "[/ignore:<comma_separated_directories_to_ignore>]");
         }
-
     }
 }

@@ -2,7 +2,7 @@
   "profiles": {
     "CommonAssemblyInjector": {
       "commandName": "Project",
-      "commandLineArgs": "/solDir:C:\\Users\\MA101802\\source\\repos\\CommonAssemblyTestProject /path:\"C:\\Users\\MA101802\\source\\repos\\CommonAssemblyTestProject\\CommonAssemblyInfos\\Type_A\\CommonAssemblyInfo.cs\" /version:1.0.0.0 /ignore:\"C:\\Users\\MA101802\\source\\repos\\CommonAssemblyTestProject\\CommonAssemblyInfos\""
+      "commandLineArgs": "/solDir:\"C:\\Users\\MA101802\\OneDrive - Tecan Trading AG\\source\\repos\\CommonAssemblyTestProject\" /path:\"C:\\Users\\MA101802\\OneDrive - Tecan Trading AG\\source\\repos\\CommonAssemblyTestProject\\CommonAssemblyInfos\\Type_A\\CommonAssemblyInfo.cs\" /version:1.0.0.0 /ignore:\"C:\\Users\\MA101802\\OneDrive - Tecan Trading AG\\source\\repos\\CommonAssemblyTestProject\\CommonAssemblyInfos\""
     }
   }
 }

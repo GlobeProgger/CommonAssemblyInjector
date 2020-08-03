@@ -7,35 +7,35 @@ using System.Threading.Tasks;
 
 namespace CommonAssemblyInjector
 {
-    public class Injector
+    public static class Injector
     {
-        private const string FILE_TYPE_PROJECT = "*.csproj";
-        private const string FILE_TYPE_ASSEMBLY = "*AssemblyInfo.cs";
+        private const string FileTypeProject = "*.csproj";
+        private const string FileTypeAssembly = "*AssemblyInfo.cs";
 
-        public string SolutionDir { get; set; }
-        public string CommonAssemblyInfoPath { get; set; }
-        public string TargetVersion { get; set; }
-        public IEnumerable<string> IgnoreDirs { get; set; }
+        public static string SolutionDir { get; set; }
+        public static string CommonAssemblyInfoPath { get; set; }
+        public static string TargetVersion { get; set; }
+        public static IEnumerable<string> IgnoreDirs { get; set; }
 
-        private string CommonAssemblyInfoFileName => Path.GetFileName(CommonAssemblyInfoPath);
-
-        public async Task TryAddCommonAssemblyToProjects()
+        public static async Task TryAddCommonAssemblyToProjects()
         {
-            IAsyncEnumerable<Tuple<string, string>> assemblyAndProjectFiles =
+            IAsyncEnumerable<string> projectFilePaths =
                 GetRelevantProjectFilesAsync(SolutionDir, TargetVersion, CommonAssemblyInfoPath);
 
-            await foreach (Tuple<string, string> assemblyAndProjectFile in assemblyAndProjectFiles)
+            await foreach (string projectFilePath in projectFilePaths)
             {
-                await LinkCommonAssemblyInfoToProjectFilesAsync(assemblyAndProjectFile.Item2);
-                await UpdateAssemblyInfoFileAsync(assemblyAndProjectFile.Item1, CommonAssemblyInfoPath);
+                string content = await FileOperationHelper.ReadAllTextAsync(projectFilePath);
+
+                await AddCommonAssemblyInfoToProjectFilesAsync(projectFilePath, content);
+                await UpdateAssemblyInfoFileAsync(projectFilePath, CommonAssemblyInfoPath);
             }
         }
 
-        private async IAsyncEnumerable<Tuple<string, string>> GetRelevantProjectFilesAsync(string solutionDir, string version,
+        private static async IAsyncEnumerable<string> GetRelevantProjectFilesAsync(string solutionDir, string version,
             string commonAssemblyPath)
         {
-            if (!(await FileOperationHelper.GetFilesAsync(solutionDir, FILE_TYPE_ASSEMBLY, SearchOption.AllDirectories) is List<string>
-                filesPaths))
+            if (!(await FileOperationHelper.GetFilesAsync(solutionDir, FileTypeAssembly, SearchOption.AllDirectories) is
+                List<string> filesPaths))
             {
                 yield break;
             }
@@ -48,16 +48,13 @@ namespace CommonAssemblyInjector
 
             await foreach (string filteredFilePath in filteredFilePaths)
             {
-                // This parent parent thing is a condition that needs to be met
                 string path = Directory.GetParent(Directory.GetParent(filteredFilePath).FullName).FullName;
-
-
-                yield return Tuple.Create(filteredFilePath, Directory.GetFiles(path, FILE_TYPE_PROJECT, SearchOption.TopDirectoryOnly)
-                    .FirstOrDefault());
+                yield return Directory.GetFiles(path, FileTypeProject, SearchOption.TopDirectoryOnly)
+                    .FirstOrDefault();
             }
         }
 
-        private async IAsyncEnumerable<string> FilterAssemblyFilesByVersionAsync(IEnumerable<string> filePaths,
+        private static async IAsyncEnumerable<string> FilterAssemblyFilesByVersionAsync(IEnumerable<string> filePaths,
             string version)
         {
             foreach (string filePath in filePaths)
@@ -74,51 +71,56 @@ namespace CommonAssemblyInjector
             }
         }
 
-        private async Task LinkCommonAssemblyInfoToProjectFilesAsync(string projectFilePath)
+        private static async Task AddCommonAssemblyInfoToProjectFilesAsync(string projectFilePath, string content)
         {
-            string projectFileContent = await FileOperationHelper.ReadAllTextAsync(projectFilePath);
-
-            if (string.IsNullOrWhiteSpace(projectFileContent))
+            if (string.IsNullOrWhiteSpace(content))
             {
                 return;
             }
 
-            string relativeCommonAssemblyInFoPath = Path.GetRelativePath(Directory.GetParent(projectFilePath).FullName, CommonAssemblyInfoPath);
+            Regex findRegEx = new Regex(@"<Compile Include=""(..\\)+CommonAssemblyInfo.cs"">",
+                RegexOptions.Singleline);
 
-            if (projectFileContent.Contains(relativeCommonAssemblyInFoPath))
+            if (findRegEx.IsMatch(content))
             {
-                return; // Is already injected
+                return;
             }
 
             Regex replaceRegEx = new Regex(@"<ItemGroup>", RegexOptions.RightToLeft);
 
+            string relativePath = await FileOperationHelper.GetRelativePath(projectFilePath, CommonAssemblyInfoPath);
 
-            string newContent = replaceRegEx.Replace(projectFileContent, $@"<ItemGroup>
-    <Compile Include=""{relativeCommonAssemblyInFoPath}"">
-      <Link>Properties\{CommonAssemblyInfoFileName}</Link>
+
+            string newContent = replaceRegEx.Replace(content,
+                $@"<ItemGroup>
+    <Compile Include=""{relativePath}"">
+        <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>", 1);
 
             await FileOperationHelper.WriteAllTextAsync(projectFilePath, newContent);
         }
 
-        private async Task UpdateAssemblyInfoFileAsync(string assemblyInfoPath, string commonAssemblyPath)
+        private static async Task UpdateAssemblyInfoFileAsync(string projectFilePath, string commonAssemblyPath)
         {
+            string assemblyInfoFilePath = await FileOperationHelper.GetAssemblyInfoFilePathFromProject(projectFilePath);
             string[] commonAssemblyInfoContent = await File.ReadAllLinesAsync(commonAssemblyPath);
 
-            string assemblyInfoContent =
-                (from line in commonAssemblyInfoContent
-                 let pattern = "[assembly: Assembly"
-                 where line.StartsWith(pattern)
-                 let regex = new Regex(@"(?<line>^\[assembly: Assembly\w+\()", RegexOptions.Multiline)
-                 select regex.Match(line)
-                    into match
-                 where match.Success
-                 select match.Captures.FirstOrDefault()?.Value)
-                .Aggregate(await File.ReadAllTextAsync(assemblyInfoPath),
-                    (current, s) =>
-                        current.Replace($"\r\n{s ?? throw new InvalidOperationException()}", $"\r\n// {s}"));
+            IEnumerable<string> assemblyInfoContentLines =
+                from line in commonAssemblyInfoContent
+                let pattern = "[assembly: Assembly"
+                where line.StartsWith(pattern)
+                let regex = new Regex(@"(?<line>^\[assembly: Assembly\w+\()", RegexOptions.Multiline)
+                select regex.Match(line)
+                into match
+                where match.Success
+                select match.Captures.FirstOrDefault()?.Value;
 
-            await FileOperationHelper.WriteAllTextAsync(assemblyInfoPath, assemblyInfoContent);
+            string assemblyInfoContent = assemblyInfoContentLines.Aggregate(
+                await File.ReadAllTextAsync(assemblyInfoFilePath),
+                (current, s) =>
+                    current.Replace($"\r\n{s ?? throw new InvalidOperationException()}", $"\r\n// {s}"));
+
+            await FileOperationHelper.WriteAllTextAsync(assemblyInfoFilePath, assemblyInfoContent);
         }
     }
 }

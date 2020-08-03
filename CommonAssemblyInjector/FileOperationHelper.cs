@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CommonAssemblyInjector
@@ -31,9 +30,31 @@ namespace CommonAssemblyInjector
             return await Task.Factory.StartNew(() => path.Split("\\").Length);
         }
 
-        public static async Task<int> GetFileDepthDiffAsync(string path, string file)
+        public static async Task<string> GetRelativePath(string source, string target)
         {
-            return await Task.Factory.StartNew(() => FileOperationHelper.GetPathDepthAsync(file).Result - FileOperationHelper.GetPathDepthAsync(path).Result - 1);
+            return await Task.Factory.StartNew(() =>
+            {
+                Uri sourcePath = new Uri(source);
+                Uri targetPath = new Uri(target);
+                Uri relativeSourcePath = sourcePath.MakeRelativeUri(targetPath);
+                return relativeSourcePath.OriginalString;
+            });
+        }
+
+        public static async Task<string> GetAssemblyInfoFilePathFromProject(string projectFilePath)
+        {
+            return await Task.Factory.StartNew(() =>
+            {
+                string? projectDir = Path.GetDirectoryName(projectFilePath);
+                string assemblyInfoFilePath = Path.Combine(projectDir, "Properties", "AssemblyInfo.cs");
+
+                if (File.Exists(assemblyInfoFilePath))
+                {
+                    return assemblyInfoFilePath;
+                }
+
+                throw new FileNotFoundException($"Could not find AssemblyInfoFile for project: {projectFilePath}");
+            });
         }
     }
 }
