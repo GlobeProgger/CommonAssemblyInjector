@@ -9,6 +9,9 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.dll
+*.pdb
+*.exe
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -110,6 +113,7 @@ ipch/
 *.cachefile
 *.VC.db
 *.VC.VC.opendb
+*.cache
 
 # Visual Studio profiler
 *.psess
